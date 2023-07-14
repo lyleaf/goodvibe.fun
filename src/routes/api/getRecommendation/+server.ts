@@ -3,6 +3,7 @@ import { OPENAI_API_KEY } from '$env/static/private';
 import { kv } from '@vercel/kv';
 
 const key = OPENAI_API_KEY;
+console.log("🚀 ~ file: +server.ts:6 ~ key:", key)
 
 // Object to store the number of requests made by each user and their last request timestamp
 interface UserRequestData {

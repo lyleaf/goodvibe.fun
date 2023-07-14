@@ -70,19 +70,19 @@ async function rateLimitMiddleware(request: Request) {
 	return null;
 }
 
-interface OpenAIStreamPayload {
-	model: string;
-	prompt: string;
-	temperature: number;
-	top_p: number;
-	frequency_penalty: number;
-	presence_penalty: number;
-	max_tokens: number;
-	stream: boolean;
-	n: number;
-}
 
-async function OpenAINotStream(payload: OpenAIStreamPayload) {
+interface OpenAINotStreamPayload {
+	model: string;
+	messages: {
+	  role: 'system' | 'user' | 'assistant';
+	  content: string;
+	}[];
+	temperature: number;
+	max_tokens: number;
+}
+  
+
+async function OpenAINotStream(payload: OpenAINotStreamPayload) {
 
 	try {
 		const res = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -94,8 +94,9 @@ async function OpenAINotStream(payload: OpenAIStreamPayload) {
 			body: JSON.stringify(payload),
 		});	
 		
-		console.log("🚀 ~ file: +server.ts:94 ~ OpenAINotStream ~ res:", res)
+		console.log("🚀 ~ file: +server.ts:94 ~ OpenAINotStream ~ res:", key)
 		console.log("🚀 ~ file: +server.ts:98 ~ OpenAINotStream ~ res:", res.status)
+		console.log("🚀 ~ file: +server.ts:98 ~ OpenAINotStream ~ res:", res.text())
 		return res;
 	} catch (e) {
 		console.log("🚀 ~ file: +server.ts:99 ~ OpenAINotStream ~ e:", e)
@@ -103,6 +104,8 @@ async function OpenAINotStream(payload: OpenAIStreamPayload) {
 	}
 
 }
+
+
 
 // async function OpenAIStream(payload: OpenAIStreamPayload) {
 // 	const encoder = new TextEncoder();
