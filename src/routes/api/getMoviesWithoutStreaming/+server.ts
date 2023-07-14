@@ -3,6 +3,7 @@ import { OPENAI_API_KEY } from '$env/static/private';
 import { kv } from '@vercel/kv';
 
 const key = "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";
+//console.log("🚀 ~ file: +server.ts:6 ~ key:", key)
 
 // Object to store the number of requests made by each user and their last request timestamp
 interface UserRequestData {
@@ -49,7 +50,7 @@ async function rateLimitMiddleware(request: Request) {
 			await updateUserRequestData(userIP, userRequests);
 		} else {
 			// Check if the user has exceeded the rate limit (5 requests per day)
-			if (count >= 100000) {
+			if (count >= 10000) {
 				return new Response('Rate limit exceeded, come back tomorrow!', { status: 429 });
 			}
 
@@ -81,59 +82,81 @@ interface OpenAIStreamPayload {
 	n: number;
 }
 
-async function OpenAIStream(payload: OpenAIStreamPayload) {
-	const encoder = new TextEncoder();
-	const decoder = new TextDecoder();
+async function OpenAINotStream(payload: OpenAIStreamPayload) {
 
-	let counter = 0;
+	try {
+		const res = await fetch('https://api.openai.com/v1/chat/completions', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${key}`,
+			},
+			body: JSON.stringify(payload),
+		});	
+		
+		console.log("🚀 ~ file: +server.ts:94 ~ OpenAINotStream ~ res:", res)
+		console.log("🚀 ~ file: +server.ts:98 ~ OpenAINotStream ~ res:", res.status)
+		return res;
+	} catch (e) {
+		console.log("🚀 ~ file: +server.ts:99 ~ OpenAINotStream ~ e:", e)
+		//controller.error(e);
+	}
 
-	const res = await fetch('https://api.openai.com/v1/completions', {
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${key}`
-		},
-		method: 'POST',
-		body: JSON.stringify(payload)
-	});
-
-	const stream = new ReadableStream({
-		async start(controller) {
-			function onParse(event: any) {
-				if (event.type === 'event') {
-					const data = event.data;
-					// https://beta.openai.com/docs/api-reference/completions/create#completions/create-stream
-					if (data === '[DONE]') {
-						controller.close();
-						return;
-					}
-					try {
-						const json = JSON.parse(data);
-						const text = json.choices[0].text;
-
-						if (counter < 2 && (text.match(/\n/) || []).length) {
-							// this is a prefix character (i.e., "\n\n"), do nothing
-							return;
-						}
-						const queue = encoder.encode(text);
-						controller.enqueue(queue);
-						counter++;
-					} catch (e) {
-						controller.error(e);
-					}
-				}
-			}
-
-			// stream response (SSE) from OpenAI may be fragmented into multiple chunks
-			// this ensures we properly read chunks and invoke an event for each SSE event stream
-			const parser = createParser(onParse);
-			// https://web.dev/streams/#asynchronous-iteration
-			for await (const chunk of res.body as any) {
-				parser.feed(decoder.decode(chunk));
-			}
-		}
-	});
-	return stream;
 }
+
+// async function OpenAIStream(payload: OpenAIStreamPayload) {
+// 	const encoder = new TextEncoder();
+// 	const decoder = new TextDecoder();
+
+// 	let counter = 0;
+
+// 	const res = await fetch('https://api.openai.com/v1/chat/completions', {
+// 		headers: {
+// 			'Content-Type': 'application/json',
+// 			Authorization: `Bearer ${key}`
+// 		},
+// 		method: 'POST',
+// 		body: JSON.stringify(payload)
+// 	});
+
+// 	const stream = new ReadableStream({
+// 		async start(controller) {
+// 			function onParse(event: any) {
+// 				if (event.type === 'event') {
+// 					const data = event.data;
+// 					// https://beta.openai.com/docs/api-reference/completions/create#completions/create-stream
+// 					if (data === '[DONE]') {
+// 						controller.close();
+// 						return;
+// 					}
+// 					try {
+// 						const json = JSON.parse(data);
+// 						const text = json.choices[0].text;
+
+// 						if (counter < 2 && (text.match(/\n/) || []).length) {
+// 							// this is a prefix character (i.e., "\n\n"), do nothing
+// 							return;
+// 						}
+// 						const queue = encoder.encode(text);
+// 						controller.enqueue(queue);
+// 						counter++;
+// 					} catch (e) {
+// 						controller.error(e);
+// 					}
+// 				}
+// 			}
+
+// 			// stream response (SSE) from OpenAI may be fragmented into multiple chunks
+// 			// this ensures we properly read chunks and invoke an event for each SSE event stream
+// 			const parser = createParser(onParse);
+// 			// https://web.dev/streams/#asynchronous-iteration
+// 			for await (const chunk of res.body as any) {
+// 				parser.feed(decoder.decode(chunk));
+// 			}
+// 		}
+// 	});
+// 	return stream;
+// }
 
 export async function POST({ request }: { request: any }) {
 	// Apply rate limit middleware
@@ -142,17 +165,17 @@ export async function POST({ request }: { request: any }) {
 		return rateLimitResult;
 	}
 	const { searched } = await request.json();
+	console.log("🚀 ~ file: +server.ts:146 ~ POST ~ searched:", searched)
 	const payload = {
-		model: 'text-davinci-003',
-		prompt: searched,
+		model: 'gpt-3.5-turbo',
+		messages: [
+			{"role": "system", "content": "You are a helpful assistant."},
+			{"role": "user", "content": searched}
+		],
 		temperature: 0.7,
 		max_tokens: 2048,
-		top_p: 1.0,
-		frequency_penalty: 0.0,
-		stream: true,
-		presence_penalty: 0.0,
-		n: 1
 	};
-	const stream = await OpenAIStream(payload);
-	return new Response(stream);
+	const res = await OpenAINotStream(payload);
+	console.log("🚀 ~ file: +server.ts:169 ~ POST ~ res:", res)
+	return new Response(res);
 }

@@ -26,9 +26,13 @@
 	 * @param {string} target
 	 */
 
+	console.log("lalalal");
+
 	$: {
 		if (searchResponse) {
 			let lastLength = recommendations.length;
+			console.log("recommendations");	
+			console.log(recommendations);
 			let x = searchResponse?.split('\n');
 			recommendations = x.map((d, i) => {
 				if ((x.length - 1 > i || endStream) && d !== '') {
@@ -55,12 +59,18 @@
 	let selectedCategories = [];
 	let specificDescriptors = '';
 
+	console.log("searchsearchsearchsearch");
+
 	async function search() {
-		if (loading) return;
+		if (loading) {
+			console.log("in search function, but loading");
+			return;
+		}
 		recommendations = [];
 		searchResponse = '';
 		endStream = false;
 		loading = true;
+		console.log("inside search function, under page.svelte")
 
 		let fullSearchCriteria = `Give me a list of 5 ${cinemaType} recommendations ${
 			selectedCategories ? `that fit all of the following categories: ${selectedCategories}` : ''
@@ -73,6 +83,10 @@
 				? `If you do not have 5 recommendations that fit these criteria perfectly, do your best to suggest other ${cinemaType}'s that I might like.`
 				: ''
 		} Please return this response as a numbered list with the ${cinemaType}'s title, followed by a colon, and then a brief description of the ${cinemaType}. There should be a line of whitespace between each item in the list.`;
+		
+		console.log("fullSearchCriteria");
+		console.log(fullSearchCriteria);
+
 		const response = await fetch('/api/getRecommendation', {
 			method: 'POST',
 			body: JSON.stringify({ searched: fullSearchCriteria }),
@@ -80,6 +94,9 @@
 				'content-type': 'application/json'
 			}
 		});
+		console.log("after response");
+		console.log(response);
+		
 
 		if (response.ok) {
 			try {
@@ -171,6 +188,10 @@
 						<div class="fontsemibold text-lg text-center mt-8 mb-4">
 							Please be patient as I think. Good things are coming 😎.
 						</div>
+					<!-- {:else}
+						<div class="fontsemibold text-lg text-center mt-8 mb-4">
+							Whatever 😎.
+						</div>	 -->
 					{/if}
 					{#if error}
 						<div class="fontsemibold text-lg text-center mt-8 text-red-500">
