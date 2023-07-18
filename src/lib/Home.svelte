@@ -2,16 +2,16 @@
 	<div
 		class="text-center md:text-left font-bold text-slate-200 text-4xl md:text-5xl mb-8 md:mb-16 w-full"
 	>
-		Create melodic rhymed postcard  <br class="hidden md:block" /> 
-		for your friends and family
-		<br class="hidden md:block" /> to make them happy 
+		Keep the good vibes coming  <br class="hidden md:block" /> 
+		by adding your AI sidekick
+		<br class="hidden md:block" /> into your chat
 	</div>
 	<div class="flex flex-wrap items-center mr-auto">
 		<button
 			on:click
 			class="w-full md:w-auto text-center bg-pink-600 hover:bg-pink-700 mb-4 flex-none rounded-full text-white font-medium py-3 px-6 mr-8"
 		>
-			Create my postcard
+			Create goodvibes
 		</button>
 		<!-- <a
 			href="https://www.youtube.com/watch?v=Z3LrfdctOpU"

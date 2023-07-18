@@ -1,4 +1,5 @@
 <script>
+	// @ts-ignore
 	import * as animateScroll from 'svelte-scrollto';
 	import { fade } from 'svelte/transition';
 	import Form from '$lib/Form.svelte';
@@ -6,6 +7,7 @@
 	import Footer from '$lib/Footer.svelte';
 	import Header from '$lib/Header.svelte';
 	import RecommendationCard from '$lib/RecommendationCard.svelte';
+	// @ts-ignore
 	import { onMount } from 'svelte';
 	import LoadingCard from '$lib/LoadingCard.svelte';
 	let loading = false;
@@ -26,26 +28,29 @@
 	 * @param {string} target
 	 */
 
-	console.log("lalalal");
 
-	$: {
+// @ts-ignore
+		$: {
 		if (searchResponse) {
-			let lastLength = recommendations.length;
-			console.log("recommendations");	
-			console.log(recommendations);
 			let x = searchResponse?.split('\n');
-			recommendations = x.map((d, i) => {
-				if ((x.length - 1 > i || endStream) && d !== '') {
-					// @ts-ignore
-					const [, title, description] = d.match(/\d\.\s*(.*?):\s*(.*)/);
-					return { title, description };
-				} else {
-					return d;
-				}
-			});
-			if (recommendations.length > lastLength) {
-				animateScroll.scrollToBottom({ duration: 1500 });
-			}
+			recommendations = [`Dennis the cat, he's got a plan`,
+				`To show off his new website to every man`, 
+				`He shows off his web page, with a purr and a meow`,
+				`With a click of his`];
+			// let lastLength = recommendations.length;
+			// let x = searchResponse?.split('\n');
+			// recommendations = x.map((d, i) => {
+			// 	if ((x.length - 1 > i || endStream) && d !== '') {
+			// 		// @ts-ignore
+			// 		const [, title, description] = d.match(/\d\.\s*(.*?):\s*(.*)/);
+			// 		return { title, description };
+			// 	} else {
+			// 		return d;
+			// 	}
+			// });
+			// if (recommendations.length > lastLength) {
+			// 	animateScroll.scrollToBottom({ duration: 1500 });
+			// }
 		}
 	}
 
@@ -59,35 +64,21 @@
 	let selectedCategories = [];
 	let specificDescriptors = '';
 
-	console.log("searchsearchsearchsearch");
 
 	async function search() {
 		if (loading) {
-			console.log("in search function, but loading");
 			return;
 		}
 		recommendations = [];
 		searchResponse = '';
 		endStream = false;
 		loading = true;
-		console.log("inside search function, under page.svelte")
 
-		let fullSearchCriteria = `Give me a list of 5 ${cinemaType} recommendations ${
-			selectedCategories ? `that fit all of the following categories: ${selectedCategories}` : ''
-		}. ${
-			specificDescriptors
-				? `Make sure it fits the following description as well: ${specificDescriptors}.`
-				: ''
-		} ${
-			selectedCategories || specificDescriptors
-				? `If you do not have 5 recommendations that fit these criteria perfectly, do your best to suggest other ${cinemaType}'s that I might like.`
-				: ''
-		} Please return this response as a numbered list with the ${cinemaType}'s title, followed by a colon, and then a brief description of the ${cinemaType}. There should be a line of whitespace between each item in the list.`;
-		console.log("🚀 ~ file: +page.svelte:86 ~ search ~ fullSearchCriteria:", fullSearchCriteria)
-		
+		let fullSearchCriteria = `Create a poem for children of 5 lines which rhymes. 
+			The poem is about showing off his cool shiny new website. 
+			The character is a Male cat called Dennis.`
 
-
-		const response = await fetch('/api/getRecommendation', {
+		const response = await fetch('/api/getPoem', {
 			method: 'POST',
 			body: JSON.stringify({ searched: fullSearchCriteria }),
 			headers: {
@@ -95,35 +86,20 @@
 			}
 		});
 
-		
-		console.log("🚀 ~ file: +page.svelte:98 ~ search ~ response:", response.status)
-
-		
-
 		if (response.ok) {
-			console.log("🚀 ~ file: +page.svelte:97 ~ search ~ response:", response)
+			console.log("🚀 ~ file: +page.svelte:82 ~ search ~ response:", response)
+			
 			try {
-				const data = response.body;
-				if (!data) {
-					return;
-				}
+				const data = await response.json(); //response.body;
+				console.log("🚀 ~ file: +page.svelte:93 ~ search ~ data:", data)
+				// @ts-ignore
 
-				const reader = data.getReader();
-				const decoder = new TextDecoder();
-
-				while (true) {
-					const { value, done } = await reader.read();
-					const chunkValue = decoder.decode(value);
-
-					searchResponse += chunkValue;
-
-					if (done) {
-						endStream = true;
-						break;
-					}
-				}
+				searchResponse = data.message;
+				console.log("🚀 ~ file: +page.svelte:93 ~ search ~ searchResponse:", searchResponse)
 			} catch (err) {
-				error = 'Looks like OpenAI timed out :(';
+				console.log("🚀 ~ file: +page.svelte:112 ~ search ~ err:", err)
+				error = err;
+
 			}
 		} else {
 			error = await response.text();
@@ -206,13 +182,7 @@
 							<div>
 								{#if recommendation !== ''}
 									<div class="mb-8">
-										{#if typeof recommendation !== 'string' && recommendation.title}
-											<RecommendationCard {recommendation} />
-										{:else}
-											<div in:fade>
-												<LoadingCard incomingStream={recommendation} />
-											</div>
-										{/if}
+										<RecommendationCard {recommendation} />
 									</div>
 								{/if}
 							</div>

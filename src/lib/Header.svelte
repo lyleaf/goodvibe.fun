@@ -13,7 +13,7 @@
 			mail 
 		</span>
 		
-		<div class="text-2xl md:text-xl font-bold ml-2">postcard.ai</div>
+		<div class="text-2xl md:text-xl font-bold ml-2">goodvibes.io</div>
 	</button>
 	<!-- <a
 		class="bg-white/20 hover:bg-white/50 shadow text-white hover:text-pink-600 font-medium rounded p-2 text-sm flex items-center"
