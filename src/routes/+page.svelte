@@ -20,7 +20,7 @@
 	 */
 	let searchResponse = '';
 	/**
-	 * @type {Array<string | {title: string, description: string}>}
+	 * @type {Array<{title: string, content: string}>}
 	 */
 	let recommendations = [];
 
@@ -32,11 +32,10 @@
 // @ts-ignore
 		$: {
 		if (searchResponse) {
-			let x = searchResponse?.split('\n');
-			recommendations = [`Dennis the cat, he's got a plan`,
-				`To show off his new website to every man`, 
-				`He shows off his web page, with a purr and a meow`,
-				`With a click of his`];
+			console.log("🚀 ~ file: +page.svelte:35 ~ searchResponse:", searchResponse)
+			const title = "the poem";
+			const content = searchResponse;
+			recommendations = [{title: title, content: content}];
 			// let lastLength = recommendations.length;
 			// let x = searchResponse?.split('\n');
 			// recommendations = x.map((d, i) => {
@@ -57,12 +56,20 @@
 	/**
 	 * @type {string}
 	 */
-	let cinemaType = 'tv show';
+	let cinemaType = 'dog';
+		/**
+	 * @type {string}
+	 */
+	 let genderType = 'female';
+		/**
+	 * @type {string}
+	 */
+	 let nameString = 'Yiling';
 	/**
 	 * @type {Array<string>}
 	 */
 	let selectedCategories = [];
-	let specificDescriptors = '';
+	let specificDescriptors = 'surfing in the wild';
 
 
 	async function search() {
@@ -75,8 +82,8 @@
 		loading = true;
 
 		let fullSearchCriteria = `Create a poem for children of 5 lines which rhymes. 
-			The poem is about showing off his cool shiny new website. 
-			The character is a Male cat called Dennis.`
+			The poem is about ${specificDescriptors}. 
+			The character is a ${genderType} ${cinemaType} called ${nameString}.`
 
 		const response = await fetch('/api/getPoem', {
 			method: 'POST',
@@ -148,6 +155,8 @@
 				<div class="w-full mb-8">
 					<Form
 						bind:cinemaType
+						bind:nameString
+						bind:genderType
 						bind:selectedCategories
 						bind:loading
 						bind:specificDescriptors
@@ -178,13 +187,11 @@
 						</div>
 					{/if}
 					{#if recommendations}
-						{#each recommendations as recommendation, i (i)}
+						{#each recommendations as poem, i (i)}
 							<div>
-								{#if recommendation !== ''}
 									<div class="mb-8">
-										<RecommendationCard {recommendation} />
+										<RecommendationCard {poem} />
 									</div>
-								{/if}
 							</div>
 						{/each}
 					{/if}

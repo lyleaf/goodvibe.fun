@@ -13,6 +13,10 @@
 	 * @type Array<string>
 	 */
 	export let selectedCategories;
+		/**
+	 * @type string
+	 */
+	 export let nameString;
 	/**
 	 * @type string
 	 */
@@ -23,73 +27,28 @@
 	export let loading;
 
 	const categoryTypes = [
-		'Action',
-		'Adventure',
-		'Animation',
-		'Biography',
-		'Comedy',
-		'Crime',
-		'Documentary',
-		'Drama',
-		'Family',
-		'Fantasy',
-		'Film-Noir',
-		'History',
-		'Horror',
-		'Musical',
-		'Mystery',
-		'Romance',
-		'Sci-Fi',
-		'Sport',
-		'Thriller',
-		'War',
-		'Western',
-		'Art-house',
-		'Black-Comedy',
-		'Chick-flick',
-		'Cult-classic',
-		'Dark-Comedy',
-		'Epic',
-		'Erotic',
-		'Experimental',
-		'Fairy-tale',
-		'Film-within-a-film',
-		'Futuristic',
-		'Gangster',
-		'Heist',
-		'Historical',
-		'Holiday',
-		'Indie',
-		'Juvenile',
-		'Melodrama',
-		'Monster',
-		'Political',
-		'Psychological',
-		'Road-movie',
-		'Satire',
-		'Science-Fiction',
-		'Slapstick',
-		'Social-issue',
-		'Superhero',
-		'Surreal',
-		'Teen',
-		'Vampire',
-		'Zombie'
+		'Gratitude',
+		'Kindness',
+		'Respect',
+		'Honesty',
+		'Empathy',
+		'Self Love'
 	];
 
 	let cinemaTypes = [
-		{ value: 'tv show', title: 'meerkat' },
-		{ value: 'movie', title: 'cat' },
-		{ value: 'tv show or movie', title: 'dog' },
-		{ value: 'dd', title: 'eagle'},
-		{ value: 'ff', title: 'piglet'},
-		{ value: 'ts', title: 'bear'}
+		{ value: 'meerkat', title: 'meerkat' },
+		{ value: 'cat', title: 'cat' },
+		{ value: 'dog', title: 'dog' },
+		{ value: 'eagle', title: 'eagle'},
+		{ value: 'piglet', title: 'piglet'},
+		{ value: 'bear', title: 'bear'},
+		{ value: 'whale', title: 'whale'},
+		{ value: 'shark', title: 'shark'},
 	];
 
 	let genderTypes = [
 		{ value: 'male', title: 'male' },
-		{ value: 'female', title: 'female' },
-		{ value: 'unknown', title: 'unknown' }
+		{ value: 'female', title: 'female' }
 	];
 </script>
 
@@ -97,7 +56,7 @@
 	<div>
 		<div class="mb-8">
 			<div class="mb-4 font-semibold text-lg">What is your spirit animal?</div>
-			<div class="flex items-center">
+			<div class="flex items-center flex-wrap">
 				{#each cinemaTypes as type (type.value)}
 					<button
 						on:click={() => {
@@ -131,7 +90,7 @@
 			</div>
 		</div>
 	
-		<div>
+		<!-- <div>
 			<div class="mb-4 font-semibold text-lg">
 				Select the topics you want to riff on.
 			</div>
@@ -153,14 +112,14 @@
 					</label>
 				{/each}
 			</div>
-		</div>
+		</div> -->
 
 		<div class="mt-8">
 			<div class="mb-4 font-semibold text-lg">
 				How can we call you?
 			</div>
 			<textarea
-				bind:value={specificDescriptors}
+				bind:value={nameString}
 				class="bg-white/40 border border-white/0 p-2 rounded-md placeholder:text-slate-800 text-slate-900 w-full h-20 font-medium"
 				placeholder="Ex. Dennis."
 			/>

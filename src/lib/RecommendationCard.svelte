@@ -2,24 +2,24 @@
 	import { fade } from 'svelte/transition';
 	import LoadingCard from './LoadingCard.svelte';
 	/**
-	 * @type {{title: string, description: string}}
+	 * @type {{title: string, content: string}}
 	 */
-	export let recommendation;
+	export let poem;
 
-	async function getRecommendationInfo() {
+	async function getPostcardInfo() {
 		const response = await fetch('/api/getMediaDetails', {
 			method: 'POST',
-			body: JSON.stringify({ title: recommendation.title }),
+			body: JSON.stringify({ title: poem.title, content: poem.content }),
 			headers: {
 				'content-type': 'application/json'
 			}
 		});
-		let recommendationDetails = await response.json();
+		let poemDetails = await response.json();
 
-		return recommendationDetails;
+		return poemDetails;
 	}
 
-	let promise = getRecommendationInfo();
+	let promise = getPostcardInfo();
 </script>
 
 <div>
@@ -44,21 +44,21 @@
 						<div class="flex items-end mb-4">
 							<div class="font-bold text-slate-200 text-3xl">
 								{data.Title}
-								<span class="font-bold text-slate-200/60 text-xl ml-2">{data.Year}</span>
+								<!-- <span class="font-bold text-slate-200/60 text-xl ml-2">{data.Year}</span> -->
 							</div>
 						</div>
-						<div class="text-slate-200/90 mb-4">
+						<div class="text-slate-200/90 mb-4 whitespace-pre-line">
 							{data.Plot}
 						</div>
-						<div class="text-slate-200/50 mb-4">
+						<!-- <div class="text-slate-200/50 mb-4">
 							Starring: {data.Actors}
-						</div>
+						</div> -->
 					</div>
-					<div class="flex items-center">
+					<!-- <div class="flex items-center">
 						<div class="mr-4 py-1 px-2 rounded-full text-pink-600 border border-pink-600 text-xs">
 							{data.Rated}
 						</div>
-					</div>
+					</div> -->
 				</div>
 			</div>
 		{:else}
@@ -115,12 +115,12 @@
 					<div>
 						<div class="flex items-end mb-4">
 							<div class="font-bold text-slate-200 text-3xl">
-								{recommendation.title}
+								{poem.title}
 								<span class="font-bold text-slate-200/60 text-xl ml-2">N/A</span>
 							</div>
 						</div>
 						<div class="text-slate-200/90 mb-4">
-							{recommendation.description}
+							{poem.content}
 						</div>
 					</div>
 				</div>
@@ -180,12 +180,12 @@
 				<div>
 					<div class="flex items-end mb-4">
 						<div class="font-bold text-slate-200 text-3xl">
-							{recommendation.title}
+							{"poem.title"}
 							<span class="font-bold text-slate-200/60 text-xl ml-2">N/A</span>
 						</div>
 					</div>
 					<div class="text-slate-200/90 mb-4">
-						{recommendation.description}
+						{error}
 					</div>
 				</div>
 			</div>
