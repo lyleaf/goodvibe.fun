@@ -16,9 +16,7 @@ async function OpenAIRespond(payload) {
 			body: JSON.stringify(payload),
 		});	
         const body = await res.json();
-        //console.log("🚀 ~ file: +server.ts:19 ~ OpenAIRespond ~ body:", body) // OK
         const respondString = body.choices[0].text;
-        console.log("🚀 ~ file: +server.ts:20 ~ OpenAIRespond ~ respondString:", respondString)
 		return respondString;
 	} catch (e) {
 		console.log("🚀 ~ file: +server.ts:99 ~ OpenAINotStream ~ e:", e)
@@ -28,15 +26,15 @@ async function OpenAIRespond(payload) {
 
 export async function POST({ request }: { request: any }) {
     const { searched } = await request.json();
-    console.log("🚀 ~ file: +server.ts:146 ~ POST ~ searched:", searched)
     const payload = {
         model: "text-davinci-003",
         prompt: searched,
         temperature: 0.7,
-        max_tokens: 50,
+        max_tokens: 100,
     };
     const respondString = await OpenAIRespond(payload);
+    console.log("🚀 ~ file: +server.ts:39 ~ POST ~ respondString:", respondString)
     return new Response(JSON.stringify(
         { message: respondString }), 
-        { status: 200 }); 
+        { status: 200 });    
 }

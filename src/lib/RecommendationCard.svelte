@@ -7,6 +7,11 @@
 	export let poem;
 
 	async function getPostcardInfo() {
+		console.log("🚀 ~ file: RecommendationCard.svelte:8 ~ poem:", poem)
+		console.log("🚀 ~ file: RecommendationCard.svelte:8 ~ poem:", poem.title)	
+		let test = JSON.stringify({ title: poem.title, content: poem.content });
+		console.log("🚀 ~ file: RecommendationCard.svelte:13 ~ getPostcardInfo ~ test:", test)
+		
 		const response = await fetch('/api/getMediaDetails', {
 			method: 'POST',
 			body: JSON.stringify({ title: poem.title, content: poem.content }),

@@ -2,19 +2,10 @@ import { OMDB_API_KEY } from '$env/static/private';
 import { json } from '@sveltejs/kit';
 
 export async function POST({ request }: { request: any }) {
-	const { poem } = await request.json();
-	console.log("🚀 ~ file: +server.ts:6 ~ POST ~ poem:", poem)
-	// const url = `http://www.omdbapi.com/?apikey=${OMDB_API_KEY}&t=${title}`;
-
-	// const res = await fetch(url);
-	// const details = await res.json();
-	
+	const poem = await request.json();
 	const poemTitle = poem.title;
-	console.log("🚀 ~ file: +server.ts:12 ~ POST ~ poemTitle:", poemTitle)
-	const poemPoster = "https://m.media-amazon.com/images/M/MV5BNjlkYjc4NGMtZjc3MS00NjQ3LTk4MmUtMTkwZGZjODE1ZDVlXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_SX300.jpg"
+	const poemPoster = "https://images.unsplash.com/photo-1675351085230-ab39b2289ff4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=632&q=80"//"https://m.media-amazon.com/images/M/MV5BNjlkYjc4NGMtZjc3MS00NjQ3LTk4MmUtMTkwZGZjODE1ZDVlXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_SX300.jpg"
 	const poemContent = poem.content;
-	console.log("🚀 ~ file: +server.ts:15 ~ POST ~ poemContent:", poemContent)
-
 	
 	return new Response(JSON.stringify(
         { Title: poemTitle,

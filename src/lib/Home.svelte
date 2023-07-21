@@ -2,9 +2,9 @@
 	<div
 		class="text-center md:text-left font-bold text-slate-200 text-4xl md:text-5xl mb-8 md:mb-16 w-full"
 	>
-		Keep the good vibes coming  <br class="hidden md:block" /> 
-		by adding your AI sidekick
-		<br class="hidden md:block" /> into your chat
+		Bring the good vibes   <br class="hidden md:block" /> 
+		by generating a poem 
+		<br class="hidden md:block" /> for you or your loved ones
 	</div>
 	<div class="flex flex-wrap items-center mr-auto">
 		<button
